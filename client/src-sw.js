@@ -29,17 +29,28 @@ registerRoute(
 
 // TODO: Implement asset caching
 
+// registerRoute(
+//   ({ request }) =>
+//     request.destination === 'script' ||
+//     request.destination === 'style' ||
+//     request.destination === 'font',
+//   new CacheFirst({
+//     cacheName: 'assets-cache',
+//     plugins: [
+//       // Additional plugins can be added as needed
+//     ],
+//   })
+// );
+
 registerRoute(
-  ({ request }) =>
-    request.destination === 'script' ||
-    request.destination === 'style' ||
-    request.destination === 'font',
-  new CacheFirst({
-    cacheName: 'assets-cache',
+  ({ request }) => ["style", "script", "worker"].includes(request.destination),
+  new StaleWhileRevalidate({
+    cacheName: "asset-cache",
     plugins: [
-      // Additional plugins can be added as needed
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
     ],
   })
 );
-//registerRoute();
 
