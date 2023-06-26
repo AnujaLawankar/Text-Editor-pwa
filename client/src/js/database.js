@@ -1,92 +1,72 @@
-// import { openDB } from 'idb';
-
-// const initdb = async () =>
-//   openDB('jate', 1, {
-//     upgrade(db) {
-//       if (db.objectStoreNames.contains('jate')) {
-//         console.log('jate database already exists');
-//         return;
-//       }
-//       db.createObjectStore('jate', { keyPath: 'id', autoIncrement: true });
-//       console.log('jate database created');
-//     },
-//   });
-
-
-
-// // TODO: Add logic to a method that accepts some content and adds it to the database
-// export const putDb = async (content) => {
-
-//   console.error('putDb is implemented');
-//   // Open the database and get a transaction
-//   const db = await openDB('jate', 1);
-//   const tx = db.transaction('jate', 'readwrite');
-
-//   // Put the content into the 'jate' object store
-//   const store = tx.objectStore('jate');
-//   await store.put(content);
-
-//   // Await the transaction to be completed
-//   await tx.done;
-
-// };
-
-
-// // TODO: Add logic for a method that gets all the content from the database
-// export const getDb = async () => {
-
-//   console.error('getDb is implemented');
-
-//   // Open the database
-//   const db = await openDB('jate', 1);
-
-//   // Get all content from the 'jate' object store
-//   const allContent = await db.getAll('jate');
-//   return allContent;
-
-// }
-
-// initdb();
-
 import { openDB } from 'idb';
 
-const DB_NAME = 'jate';
-const DB_VERSION = 1;
-const STORE_NAME = 'jate';
-
-const initdb = async () => {
-  return openDB(DB_NAME, DB_VERSION, {
+const initdb = async () =>
+  openDB('jate', 1, {
     upgrade(db) {
-      if (db.objectStoreNames.contains(STORE_NAME)) {
-        console.log(`${STORE_NAME} database already exists`);
+      if (db.objectStoreNames.contains('jate')) {
+        console.log('jate database already exists');
         return;
       }
-      db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-      console.log(`${STORE_NAME} database created`);
+      db.createObjectStore('jate', { keyPath: 'id', autoIncrement: true });
+      console.log('jate database created');
     },
   });
-}
 
-export const putDb = async (content) => {
-  try {
-    const db = await openDB(DB_NAME, DB_VERSION);
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
-    await store.put(content);
-    await tx.done;
-  } catch (error) {
-    console.error('Error while adding content to the database: ', error);
-  }
-}
+// TODO: Add logic to a method that accepts some content and adds it to the database
 
-export const getDb = async () => {
-  try {
-    const db = await openDB(DB_NAME, DB_VERSION);
-    const allContent = await db.getAll(STORE_NAME);
-    return allContent;
-  } catch (error) {
-    console.error('Error while retrieving content from the database: ', error);
-  }
-}
+// TODO: Add logic for a method that gets all the content from the database
+
+
+export const postDb = async (content) => {
+  console.log('Post to the ase');
+  const jateDb = await openDB('jate', 1);
+  const tx = jateDb.transaction('jate', 'readwrite');
+  const store = tx.objectStore('jate');
+  const request = store.add({ jate: content });
+  const result = await request;
+  console.log('🚀 - data saved to the database', result);
+};
+
+export const getAllDb = async () => {
+  console.log('GET all from the database');
+  const jateDb = await openDB('jate', 1);
+  const tx = jateDb.transaction('jate', 'readonly');
+  const store = tx.objectStore('jate');
+  const request = store.getAll();
+  const result = await request;
+  console.log('result.value', result);
+  return result;
+};
+
+export const getOneDb = async (id) => {
+  console.log('GET from the database');
+  const jateDb = await openDB('jate', 1);
+  const tx = jateDb.transaction('jate', 'readonly');
+  const store = tx.objectStore('jate');
+  const request = store.get(id);
+  const result = await request;
+  console.log('result.value', result);
+  return result;
+};
+export const deleteDb = async (id) => {
+  console.log('DELETE from the database', id);
+  const jateDb = await openDB('jate', 1);
+  const tx = jateDb.transaction('jate', 'readwrite');
+  const store = tx.objectStore('jate');
+  const request = store.delete(id);
+  const result = await request;
+  console.log('result.value', result);
+  return result;
+};
+
+export const putDb = async (id, content) => {
+  console.log('PUT to the database');
+  const jateDb = await openDB('jate', 1);
+  const tx = jateDb.transaction('jate', 'readwrite');
+  const store = tx.objectStore('jate');
+  const request = store.put({ id: id, jate: content });
+  const result = await request;
+  console.log('🚀 - data saved to the database', result);
+};
 
 initdb();
