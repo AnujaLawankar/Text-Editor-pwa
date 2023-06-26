@@ -43,11 +43,12 @@ export const getOneDb = async (id) => {
   const jateDb = await openDB('jate', 1);
   const tx = jateDb.transaction('jate', 'readonly');
   const store = tx.objectStore('jate');
-  const request = store.get(id);
+  const request = store.get(Number(id));
   const result = await request;
   console.log('result.value', result);
   return result;
 };
+
 export const deleteDb = async (id) => {
   console.log('DELETE from the database', id);
   const jateDb = await openDB('jate', 1);
