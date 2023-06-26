@@ -1,5 +1,7 @@
 // Import methods to save and get data from the indexedDB database in './database.js'
-import { postDb, getOneDb } from './database';
+
+
+import { putDb, getDb } from './database';
 import { header } from './header';
 
 export default class {
@@ -30,10 +32,10 @@ export default class {
     // });
 
     // Get data from IndexedDB, and use the last entry if available
-    getOneDb().then((data) => {
-      let lastEntry = data ? data.jate : null;
+    getDb().then((data) => {
+
       console.info('Loaded data from IndexedDB, injecting into editor');
-      this.editor.setValue(lastEntry || localData || header);
+      this.editor.setValue(data || localData || header);
     });
 
 
@@ -45,7 +47,7 @@ export default class {
     // Save the content of the editor when the editor itself is loses focus
     this.editor.on('blur', () => {
       console.log('The editor has lost focus');
-      postDb(localStorage.getItem('content'));
+      putDb(localStorage.getItem('content'));
     });
   }
 }
